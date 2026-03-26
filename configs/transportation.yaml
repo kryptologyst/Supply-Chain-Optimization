@@ -1,0 +1,49 @@
+# Transportation Optimization Configuration
+optimization:
+  method: "highs"  # Options: highs, pulp, ortools
+  timeout: 300
+  tolerance: 1e-6
+  max_iterations: 10000
+
+constraints:
+  max_capacity_utilization: 0.95
+  min_service_level: 0.90
+  max_transportation_cost_per_unit: 10.0
+
+costs:
+  holding_cost_rate: 0.20  # Annual holding cost as % of product value
+  stockout_cost_multiplier: 10.0  # Stockout cost as multiple of holding cost
+  transportation_cost_base: 1.0
+
+data:
+  synthetic:
+    n_warehouses: 5
+    n_stores: 15
+    n_products: 10
+    time_horizon_days: 365
+    demand_variability: 0.2
+    cost_variability: 0.15
+
+evaluation:
+  metrics:
+    - "total_cost"
+    - "service_level"
+    - "inventory_turns"
+    - "fill_rate"
+    - "on_time_delivery"
+  
+  business_kpis:
+    - "cost_reduction_percent"
+    - "service_level_improvement"
+    - "inventory_reduction_percent"
+
+visualization:
+  plot_style: "seaborn-v0_8"
+  figure_size: [12, 8]
+  dpi: 300
+  save_format: "png"
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/optimization.log"

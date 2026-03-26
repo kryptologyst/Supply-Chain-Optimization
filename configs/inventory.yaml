@@ -1,0 +1,66 @@
+# Inventory Optimization Configuration
+optimization:
+  method: "ortools"  # Options: ortools, pulp, cvxpy
+  solver_timeout: 600
+  mip_gap: 0.01
+  max_iterations: 1000000
+
+inventory:
+  service_level_target: 0.95
+  review_period_days: 7
+  lead_time_days: 14
+  safety_stock_multiplier: 2.0
+  
+  costs:
+    holding_cost_rate: 0.25  # Annual holding cost as % of product value
+    ordering_cost: 100.0
+    stockout_cost_multiplier: 20.0
+    emergency_order_premium: 0.5
+
+multi_echelon:
+  enabled: true
+  levels:
+    - "supplier"
+    - "distribution_center"
+    - "warehouse"
+    - "store"
+  
+  constraints:
+    max_inventory_level: 10000
+    min_reorder_point: 100
+    max_order_quantity: 5000
+
+forecasting:
+  method: "xgboost"  # Options: arima, ets, xgboost, lightgbm
+  horizon_days: 30
+  seasonality_periods: [7, 30, 365]  # Weekly, monthly, yearly
+  features:
+    - "lag_1"
+    - "lag_7"
+    - "lag_30"
+    - "rolling_mean_7"
+    - "rolling_mean_30"
+    - "trend"
+    - "seasonality"
+
+evaluation:
+  metrics:
+    - "inventory_turns"
+    - "service_level"
+    - "stockout_frequency"
+    - "average_inventory_level"
+    - "total_cost"
+  
+  forecasting_metrics:
+    - "mape"
+    - "smape"
+    - "mase"
+    - "bias"
+
+data:
+  synthetic:
+    n_products: 50
+    n_locations: 10
+    time_horizon_days: 730
+    demand_patterns: ["seasonal", "trend", "random"]
+    seasonality_strength: 0.3
